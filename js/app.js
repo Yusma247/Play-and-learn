@@ -7,6 +7,7 @@ import { Input } from './input.js';
 import * as fq from './games/fingerquest.js';
 import * as learn from './games/learn.js';
 import * as bubbles from './games/bubbles.js';
+import * as magic from './games/magic.js';
 import { openParent } from './parent.js';
 import { esc, sleep, toast, keepAwake, confetti } from './ui.js';
 
@@ -15,6 +16,7 @@ const vision = new Vision();
 const input = new Input(vision);
 
 const GAMES = {
+  magic: { mod: magic, icon: '✨', name: 'magicTouch', sub: 'magicTouchSub', needsCamera: false, tone: 'c1' },
   bubbles: { mod: bubbles, icon: '🫧', name: 'bubblePop', sub: 'bubblePopSub', needsCamera: false, tone: 'c3' },
   learn: { mod: learn, icon: '🧩', name: 'pickLearn', sub: 'pickLearnSub', needsCamera: false, tone: 'c2' },
   finger: { mod: fq, icon: '🖐️', name: 'fingerQuest', sub: 'fingerQuestSub', needsCamera: true, tone: 'c1' },

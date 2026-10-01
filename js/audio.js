@@ -33,6 +33,8 @@ export const sfx = {
   chime() { [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.09, 0.35)); },
   pop() { tone(700, 0, 0.08, 'triangle', 0.16); tone(1100, 0.03, 0.1, 'triangle', 0.1); },
   soft() { tone(392, 0, 0.18, 'sine', 0.08); tone(330, 0.15, 0.25, 'sine', 0.08); }, // gentle, never harsh
+  // a rising scale (C major pentatonic) so every touch sounds pleasant
+  note(i) { const sc = [523, 587, 659, 784, 880, 1047]; tone(sc[(i - 1) % sc.length], 0, 0.5, 'sine', 0.14); tone(sc[(i - 1) % sc.length] * 2, 0, 0.3, 'triangle', 0.04); },
   tick() { tone(880, 0, 0.05, 'sine', 0.06); },
 };
 

@@ -54,13 +54,29 @@ with sync_playwright() as p:
     page.click('#w-go')
     page.wait_for_selector('.home')
     check('home greets the child by name', 'Zoya' in page.locator('.home h1').inner_text())
-    check('three game cards shown', page.locator('.gcard').count() == 3)
+    check('four game cards shown', page.locator('.gcard').count() == 4)
     page.screenshot(path=f'{SHOTS}/2_home.png')
 
     # ---------- memory: reload keeps the profile ----------
     page.reload()
     page.wait_for_selector('.home')
     check('profile survives a reload (no welcome screen)', page.locator('.welcome').count() == 0 and 'Zoya' in page.locator('.home h1').inner_text())
+
+    # ---------- magic touch: any touch gives a reaction ----------
+    page.click('.gcard[data-g=magic]')
+    page.wait_for_selector('#mg-btn')
+    page.click('#mg-btn', force=True)
+    page.wait_for_timeout(150)
+    check('magic touch reacts with sparks', page.locator('.spark').count() > 5)
+    check('magic touch counts the touch', '1' in page.locator('#mg-stars').inner_text())
+    for _ in range(40):
+        if page.locator('.screen.done').count():
+            break
+        page.click('#mg-btn', force=True, timeout=3000) if page.locator('#mg-btn').count() else None
+        page.wait_for_timeout(450)
+    check('magic touch round finishes with a celebration', page.locator('.screen.done').count() == 1)
+    page.click('#d-home')
+    page.wait_for_selector('.home')
 
     # ---------- bubble pop with touch ----------
     page.click('.gcard[data-g=bubbles]')
@@ -76,11 +92,11 @@ with sync_playwright() as p:
     page.screenshot(path=f'{SHOTS}/3_done.png')
     pr = profile(page)
     check('stars were saved', pr['stats']['stars'] >= 10, str(pr['stats']['stars']))
-    check('a sticker was earned', len(pr['stats']['stickers']) == 1)
-    check('session was logged', len(pr['stats']['sessions']) == 1 and pr['stats']['sessions'][0]['game'] == 'bubbles')
+    check('a sticker was earned', len(pr['stats']['stickers']) == 2)
+    check('session was logged', len(pr['stats']['sessions']) == 2 and [x['game'] for x in pr['stats']['sessions']] == ['magic', 'bubbles'])
     page.click('#d-home')
     page.wait_for_selector('.home')
-    check('stickers show on home', page.locator('.srow span').count() == 1)
+    check('stickers show on home', page.locator('.srow span').count() == 2)
 
     # ---------- pick and learn: wrong picks fade, round completes ----------
     page.click('.gcard[data-g=learn]')
@@ -187,7 +203,7 @@ with sync_playwright() as p:
     page.keyboard.press('Space')
     page.wait_for_timeout(900)
     check('switch press chooses the highlighted target', profile(page)['stats']['stars'] >= stars_a + 1 or page.locator('.tile.right').count() == 1)
-    page.click('#bp-menu') if page.locator('#bp-menu').count() else (page.click('#pl-menu') if page.locator('#pl-menu').count() else None)
+    page.click('.gbar .btn')
     page.wait_for_selector('.home')
 
     # ---------- head pointer with a demo moving head ----------
