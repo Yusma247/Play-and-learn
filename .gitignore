@@ -1,0 +1,5 @@
+dist/
+play-and-learn-site.zip
+__pycache__/
+*.pyc
+node_modules/

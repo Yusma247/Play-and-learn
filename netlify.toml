@@ -1,0 +1,28 @@
+# Netlify runs make-site.py on every push. It stamps a new version into sw.js and writes the site to dist.
+[build]
+  command = "python3 make-site.py"
+  publish = "dist"
+
+# The service worker must never be cached by the browser, so updates arrive.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Big files that never change under the same name.
+[[headers]]
+  for = "/vendor/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Permissions-Policy = "camera=(self), microphone=(), geolocation=()"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"

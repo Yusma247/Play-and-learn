@@ -1,0 +1,110 @@
+// Child-facing text in English and Hindi. The parent area stays in English.
+
+const S = {
+  en: {
+    hello: 'Hi, {name}!',
+    play: 'Play',
+    fingerQuest: 'Finger Quest',
+    pickLearn: 'Pick & Learn',
+    bubblePop: 'Bubble Pop',
+    fingerQuestSub: 'Show fingers',
+    pickLearnSub: 'Choose the answer',
+    bubblePopSub: 'Pop the bubbles',
+    again: 'Again',
+    help: 'Help',
+    skip: 'Skip',
+    menu: 'Menu',
+    greatJob: 'Great job!',
+    tryAgain: 'Try again',
+    keepHolding: 'Keep holding!',
+    showFingers: 'Show me {n} fingers',
+    showFinger: 'Show me 1 finger',
+    howManyThings: 'How many {item}?',
+    addQ: 'What is {a} plus {b}?',
+    findColour: 'Find the {colour} one',
+    findAnimal: 'Find the {animal}',
+    popBubble: 'Pop the bubble!',
+    holdUpHand: 'Hold your hand up so the camera can see it',
+    lookStraight: 'Look straight at the screen and stay still',
+    restTime: 'Rest time',
+    restSub: 'You played so well. Take a little break.',
+    keepPlaying: 'Keep playing',
+    imDone: "I'm done",
+    roundDone: 'You did it!',
+    playAgain: 'Play again',
+    home: 'Home',
+    continue: 'Continue where you stopped',
+    myStickers: 'My stickers',
+    stars: 'stars',
+    noCameraTitle: 'The camera is not ready',
+    noCameraBody: 'Ask a grown up to allow the camera, or play with touch.',
+    useTouch: 'Play with touch',
+    retry: 'Try again',
+    whoPlays: 'Who is playing?',
+    grownUps: 'For grown ups',
+    items: { fish: 'fish', stars: 'stars', balls: 'balls', apples: 'apples', flowers: 'flowers', ducks: 'ducks' },
+    colours: { red: 'red', blue: 'blue', green: 'green', yellow: 'yellow', orange: 'orange', purple: 'purple' },
+    animals: { cat: 'cat', dog: 'dog', fish: 'fish', bird: 'bird', cow: 'cow', duck: 'duck' },
+  },
+  hi: {
+    hello: 'नमस्ते, {name}!',
+    play: 'खेलो',
+    fingerQuest: 'उंगली खेल',
+    pickLearn: 'चुनो और सीखो',
+    bubblePop: 'बुलबुले फोड़ो',
+    fingerQuestSub: 'उंगलियाँ दिखाओ',
+    pickLearnSub: 'सही जवाब चुनो',
+    bubblePopSub: 'बुलबुले फोड़ो',
+    again: 'फिर से',
+    help: 'मदद',
+    skip: 'आगे',
+    menu: 'मेनू',
+    greatJob: 'शाबाश!',
+    tryAgain: 'फिर कोशिश करो',
+    keepHolding: 'ऐसे ही रुको!',
+    showFingers: '{n} उंगलियाँ दिखाओ',
+    showFinger: '1 उंगली दिखाओ',
+    howManyThings: 'कितने {item}?',
+    addQ: '{a} और {b} कितने होते हैं?',
+    findColour: '{colour} रंग ढूँढो',
+    findAnimal: '{animal} ढूँढो',
+    popBubble: 'बुलबुला फोड़ो!',
+    holdUpHand: 'अपना हाथ ऊपर उठाओ ताकि कैमरा देख सके',
+    lookStraight: 'सीधे स्क्रीन को देखो और रुके रहो',
+    restTime: 'आराम का समय',
+    restSub: 'तुमने बहुत अच्छा खेला। थोड़ा आराम करो।',
+    keepPlaying: 'खेलते रहो',
+    imDone: 'बस हो गया',
+    roundDone: 'तुमने कर दिखाया!',
+    playAgain: 'फिर खेलो',
+    home: 'घर',
+    continue: 'जहाँ रुके थे वहीं से',
+    myStickers: 'मेरे स्टिकर',
+    stars: 'तारे',
+    noCameraTitle: 'कैमरा तैयार नहीं है',
+    noCameraBody: 'किसी बड़े से कैमरा चालू करवाओ, या छूकर खेलो।',
+    useTouch: 'छूकर खेलो',
+    retry: 'फिर कोशिश करो',
+    whoPlays: 'कौन खेल रहा है?',
+    grownUps: 'बड़ों के लिए',
+    items: { fish: 'मछलियाँ', stars: 'तारे', balls: 'गेंदें', apples: 'सेब', flowers: 'फूल', ducks: 'बत्तखें' },
+    colours: { red: 'लाल', blue: 'नीला', green: 'हरा', yellow: 'पीला', orange: 'नारंगी', purple: 'बैंगनी' },
+    animals: { cat: 'बिल्ली', dog: 'कुत्ता', fish: 'मछली', bird: 'चिड़िया', cow: 'गाय', duck: 'बत्तख' },
+  },
+};
+
+let lang = 'en';
+export const setLang = (l) => { lang = S[l] ? l : 'en'; document.documentElement.lang = lang; };
+export const getLang = () => lang;
+export const speechLang = () => (lang === 'hi' ? 'hi-IN' : 'en-IN');
+
+export function t(key, vars = {}) {
+  let s = (S[lang] && S[lang][key]) || S.en[key] || key;
+  if (typeof s !== 'string') return s;
+  return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
+}
+
+// nested word lists, for example word('colours','red')
+export function word(group, key) {
+  return ((S[lang] && S[lang][group]) || S.en[group])[key] || S.en[group][key] || key;
+}
