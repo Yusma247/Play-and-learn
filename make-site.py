@@ -32,8 +32,8 @@ sw = open(sw_path, encoding='utf-8').read().replace('__BUILD__', build)
 open(sw_path, 'w', encoding='utf-8').write(sw)
 
 # every file the app caches for offline use must exist
-core = re.search(r'const CORE = \[(.*?)\];', sw, re.S).group(1)
-missing = [f for f in re.findall(r"'([^']+)'", core) if f != './' and not os.path.exists(os.path.join(DIST, f))]
+listed = ''.join(re.search(rf'const {name} = \[(.*?)\];', sw, re.S).group(1) for name in ('CORE', 'BIG'))
+missing = [f for f in re.findall(r"'([^']+)'", listed) if f != './' and not os.path.exists(os.path.join(DIST, f))]
 if missing:
     raise SystemExit('Missing files listed in sw.js: ' + ', '.join(missing))
 

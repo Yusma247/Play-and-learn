@@ -2,6 +2,9 @@
 [build]
   command = "python3 make-site.py"
   publish = "dist"
+  # Skip the build, and so spend no credits, when nothing the app needs has changed.
+  # (tests, README, CI files and notes do not change the app.)
+  ignore = "test -n \"$CACHED_COMMIT_REF\" && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- index.html manifest.webmanifest sw.js netlify.toml make-site.py js css icons vendor"
 
 # The service worker must never be cached by the browser, so updates arrive.
 [[headers]]

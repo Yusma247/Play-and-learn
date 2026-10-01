@@ -1,0 +1,67 @@
+# Runs on every push and pull request.
+# test: unit tests, site build, and the full browser test with a pretend camera (no real camera needed).
+# checks: Lighthouse accessibility and quality checks on the built site.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Unit tests
+        run: node tests/unit.mjs
+
+      - name: Build the site
+        run: python make-site.py
+
+      - name: Install browser for tests
+        run: |
+          pip install -r requirements-dev.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Browser tests
+        run: |
+          python tests/serve.py 8123 &
+          sleep 2
+          python tests/e2e.py
+        env:
+          SHOTS: ${{ runner.temp }}/shots
+
+      - name: Keep screenshots if something failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: ${{ runner.temp }}/shots
+
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build the site
+        run: python make-site.py
+      - name: Lighthouse
+        run: npx --yes @lhci/cli@0.14.x autorun --config=lighthouserc.json

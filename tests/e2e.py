@@ -233,6 +233,9 @@ with sync_playwright() as p:
 
     # ---------- real camera path: no model available gives a friendly screen ----------
     ctx2 = browser.new_context(viewport={'width': 1100, 'height': 760}, permissions=['camera'])
+    # make the model download fail on purpose, so the test gives the same result with or without internet
+    ctx2.route('**://storage.googleapis.com/**', lambda r: r.abort())
+    ctx2.route('**/vendor/*.task', lambda r: r.abort())
     page4 = ctx2.new_page()
     page4.on('dialog', lambda d: d.accept())
     page4.goto(BASE)
