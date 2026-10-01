@@ -9,7 +9,7 @@ const INPUTS = [
   ['switch', '🔘 Single switch', 'Pictures light up one by one. Press Space, Enter or tap anywhere to choose. Works with USB and Bluetooth switches.'],
 ];
 
-const GAME_NAMES = { finger: 'Finger Quest', learn: 'Pick & Learn', bubbles: 'Bubble Pop' };
+const GAME_NAMES = { magic: 'Magic Touch', finger: 'Finger Quest', learn: 'Pick & Learn', bubbles: 'Bubble Pop' };
 
 export function openParent(app) {
   const { store, root } = app;

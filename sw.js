@@ -7,7 +7,7 @@ const CORE = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/store.js', 'js/i18n.js', 'js/audio.js', 'js/ui.js', 'js/vision.js', 'js/input.js',
   'js/oneeuro.js', 'js/fingers.js', 'js/parent.js',
-  'js/games/fingerquest.js', 'js/games/learn.js', 'js/games/bubbles.js', 'js/games/content.js',
+  'js/games/fingerquest.js', 'js/games/learn.js', 'js/games/bubbles.js', 'js/games/magic.js', 'js/games/content.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png',
   'vendor/mediapipe/vision_bundle.mjs',
   'vendor/mediapipe/wasm/vision_wasm_internal.js', 'vendor/mediapipe/wasm/vision_wasm_internal.wasm',
