@@ -56,7 +56,10 @@ export function start(ctx) {
   }
 
   function retarget() {
-    input.setTargets(Array.from(bubbles).map(el => ({ el, onSelect: () => pop(el) })));
+    input.setTargets([
+      ...Array.from(bubbles).map(el => ({ el, onSelect: () => pop(el) })),
+      { el: $('bp-menu'), onSelect: () => { alive = false; input.clear(); ctx.exit(); }, scanSkip: true, holdScale: 2 },
+    ]);
   }
 
   async function pop(el) {
@@ -90,7 +93,6 @@ export function start(ctx) {
     });
   }
 
-  $('bp-menu').onclick = () => { alive = false; input.clear(); ctx.exit(); };
   speak(t('popBubble'));
   // wait one frame so the arena has a size
   requestAnimationFrame(() => { for (let i = 0; i < together; i++) spawn(); });

@@ -105,8 +105,21 @@ export class Vision {
         ...extra,
       });
       try { this.models[kind] = await make('GPU'); } catch (e) { this.models[kind] = await make('CPU'); }
+      this.warmUp(this.models[kind]);
     })();
     try { await this.pending[kind]; } finally { delete this.pending[kind]; }
+  }
+
+  // The first detection can freeze the page for a few seconds while the model gets ready.
+  // Do it now, while the loading spinner is still showing, so the game itself starts smoothly.
+  warmUp(model) {
+    try {
+      const c = document.createElement('canvas');
+      c.width = c.height = 128;
+      const ts = Math.max(performance.now(), this.lastTs + 1);
+      this.lastTs = ts;
+      model.detectForVideo(c, ts);
+    } catch (e) { /* not important */ }
   }
 
   // Look at the newest camera frame. Returns {hand, face, fresh}.

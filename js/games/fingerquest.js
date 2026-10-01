@@ -101,7 +101,8 @@ export function start(ctx) {
     $('fq-q').textContent = qText();
     $('fq-vis').textContent = qVisual();
     setMsg('');
-    speak(qText());
+    const said = qText();
+    requestAnimationFrame(() => requestAnimationFrame(() => { if (alive && q === qs[qi]) speak(said); }));
     ctx.save({ game: 'finger', qs, qi, results, stars });
   }
 

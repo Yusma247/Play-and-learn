@@ -88,7 +88,7 @@ export function start(ctx) {
     $('pl-vis').textContent = q.kind === 'count' ? q.item[1].repeat(q.answer) : '';
     tilesEl.innerHTML = q.options.map((o, i) => `<button class="tile" data-i="${i}" aria-label="${esc(String(o.v))}">${tileHtml(o)}</button>`).join('');
     const btns = Array.from(tilesEl.children);
-    input.setTargets(btns.map((el, i) => ({ el, onSelect: () => choose(i, el) })));
+    input.setTargets([...btns.map((el, i) => ({ el, onSelect: () => choose(i, el) })), ...navTargets()]);
     speak(prompt());
     ctx.save({ game: 'learn', qs, qi, results, stars });
   }
@@ -143,14 +143,21 @@ export function start(ctx) {
     });
   }
 
-  $('pl-menu').onclick = () => { alive = false; ctx.exit(); };
-  $('pl-again').onclick = () => speak(prompt());
-  $('pl-skip').onclick = () => {
+  // Back, hear again and skip can be reached by the pointer too. Back needs a longer hold so it is not chosen by accident.
+  // They are left out of single switch scanning so scanning stays short. A tap always works.
+  function navTargets() {
+    return [
+      { el: $('pl-again'), onSelect: () => speak(prompt()), scanSkip: true },
+      { el: $('pl-skip'), onSelect: skip, scanSkip: true, holdScale: 1.5 },
+      { el: $('pl-menu'), onSelect: () => { alive = false; ctx.exit(); }, scanSkip: true, holdScale: 2 },
+    ];
+  }
+  function skip() {
     if (locked) return;
     locked = true;
     results.push({ ok: false, helped: true, skipped: true, ms: performance.now() - qStart });
     next();
-  };
+  }
 
   show();
 

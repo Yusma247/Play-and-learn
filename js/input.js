@@ -63,7 +63,7 @@ export class Input {
         d.setAttribute('aria-hidden', 'true');
         t.el.appendChild(d);
       }
-      t._click = () => { if (this.mode !== 'switch' && this.enabled) this.fire(t); };
+      t._click = () => { if (this.enabled && (this.mode !== 'switch' || t.scanSkip)) this.fire(t); };
       t.el.addEventListener('click', t._click);
       return t;
     });
@@ -205,13 +205,13 @@ export class Input {
     if (mouth && !this.mouthWas) { this.mouthWas = true; this.fire(hit); return; }
     this.mouthWas = !!mouth;
 
-    const p = clamp((now - this.hoverStart) / (this.settings.holdTime * 1000), 0, 1);
+    const p = clamp((now - this.hoverStart) / (this.settings.holdTime * 1000 * (hit.holdScale || 1)), 0, 1);
     hit.el.style.setProperty('--p', p);
     if (p >= 1) this.fire(hit);
   }
 
   scan(now) {
-    const list = this.targets.filter(t => this.active(t));
+    const list = this.targets.filter(t => this.active(t) && !t.scanSkip);
     this.scanList = list;
     for (const t of this.targets) t.el.classList.remove('scan');
     if (!list.length) return;
